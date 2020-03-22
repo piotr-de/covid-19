@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[64]:
+# In[90]:
 
 
 import pandas as pd
 from datetime import datetime, timedelta
 from os import path
 import glob
+import matplotlib.pyplot as plt
 
 
 # In[62]:
@@ -31,20 +32,24 @@ while date >= min_date:
     date = date - timedelta(days = 1)
 
 
-# In[70]:
+# In[134]:
 
 
 data_files = glob.glob(f"{data_dir}/*.csv")
 
 daily_dataframes = []
 
-print(data_files)
-
 for file in data_files:
     daily_dataframe = pd.read_csv(file)
     daily_dataframes.append(daily_dataframe)
 
 combined_data = pd.concat(daily_dataframes, axis=0, ignore_index=True)
+combined_data = combined_data.sort_values(by="Last Update", ascending=False)
 
-print(combined_data)
+
+# In[178]:
+
+
+grouped_data = combined_data.groupby(by=["Last Update", "Country/Region"]).sum()
+print(grouped_data.head())
 
